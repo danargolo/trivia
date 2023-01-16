@@ -13,7 +13,6 @@ class Feedback extends Component {
     return (
       <>
         <Header />
-        <p data-testid="feedback-text">Feedback</p>
         <p data-testid="feedback-text">
           {assertions < THREE
             ? 'Could be better...'
