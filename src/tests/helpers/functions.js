@@ -29,3 +29,12 @@ export const loginSuccess = () => {
   userEvent.click(BTN_PLAY);
   return { INPUT_NAME, INPUT_EMAIL };
 };
+
+export const resposeCorrectAnswers = async (times) => {
+  for (let index = 1; index <= times; index += 1) {
+    const correct = await screen.findByTestId('correct-answer');
+    userEvent.click(correct);
+    const nextButton = await screen.findByTestId('btn-next');
+    userEvent.click(nextButton);
+  }
+};
