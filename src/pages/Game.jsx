@@ -105,7 +105,7 @@ class Game extends Component {
       isNextVisible: false,
       time: TIMER,
       disableButton: false,
-      answerNumber: prev.answerNumber < FOUR ? prev.answerNumber + 1 : 0,
+      answerNumber: prev.answerNumber + 1,
       countNext: prev.countNext + 1,
     }), this.handleRandon);
     if (answerNumber === FOUR) {
@@ -140,7 +140,7 @@ class Game extends Component {
     localStorage.setItem('ranking', JSON.stringify(ranking));
   };
 
-  changeColor = (item = '') => {
+  changeColor = (item) => {
     // console.log(item)
     const { correctAnswer, isNextVisible } = this.state;
     if (isNextVisible) {

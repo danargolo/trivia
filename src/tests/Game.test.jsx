@@ -15,6 +15,24 @@ const INITIAL_STATE = {
   },
 };
 
+const INITIAL_STATE_2 = {
+  player: {
+  name: 'Anderson',
+  assertions: 0,
+  score: 0,
+  gravatarEmail: 'a@a.com',
+  },
+};
+
+const array = Array(5).fill('');
+
+const ranking = [
+  {name: 'User1', score:346, picture:'user1@u.com'},
+  {name: 'User2', score:345, picture:'user2@u.com'},
+  {name: 'User3', score:320, picture:'user3@u.com'},
+  {name: 'User4', score:350, picture:'user4@u.com'}
+];
+
 describe('[TELA DE GAME] - Testando a tela de Game.', () => {
   afterEach(() => jest.clearAllMocks())
 
@@ -45,7 +63,7 @@ describe('[TELA DE GAME] - Testando a tela de Game.', () => {
     const question = await screen.findByTestId('question-text')
 
     expect(question).toBeInTheDocument();
-    
+
   });
 
   test('Testa se existe um elemento com testId answer-options', async () => {
@@ -59,7 +77,7 @@ describe('[TELA DE GAME] - Testando a tela de Game.', () => {
 
     expect(answer).toBeInTheDocument();
 
-    
+
   });
 
   test('Testa se e renderizado um botao com texto next', async () => {
@@ -98,7 +116,7 @@ describe('[TELA DE GAME] - Testando a tela de Game.', () => {
       json: () => param === `https://opentdb.com/api.php?amount=5&token=${tokenResponse.token}`
       ? Promise.resolve({...questionsResponse, results: []}) : Promise.resolve(tokenResponse),
     }));
-    
+
     const { history } = renderWithRouterAndRedux(<App />);
 
     loginSuccess();
@@ -112,7 +130,7 @@ describe('[TELA DE GAME] - Testando a tela de Game.', () => {
       json: () => param === `https://opentdb.com/api.php?amount=5&token=${tokenResponse.token}`
       ? Promise.resolve(questionsResponse) : Promise.resolve(tokenResponse),
     }));
-    
+
     const { history } = renderWithRouterAndRedux(<App />);
 
     loginSuccess();
@@ -134,6 +152,37 @@ describe('[TELA DE GAME] - Testando a tela de Game.', () => {
       const nextButton = await screen.findByTestId('btn-next');
       expect(nextButton).toBeInTheDocument();
     }, { timeout: 33000 })
+  });
+
+  test('Testa se sort devolve o array ordenado pela maior pontuação', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(questionsResponse) ,
+    }));
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+
+    global.fetch = jest.fn((param) => Promise.resolve({
+      json: () => param === `https://opentdb.com/api.php?amount=5&token=${tokenResponse.token}`
+      ? Promise.resolve(questionsResponse) : Promise.resolve(tokenResponse),
+    }));
+
+    renderWithRouterAndRedux(<App />);
+
+    loginSuccess();
+
+    await resposeCorrectAnswers(5);
+
+    const rank = JSON.parse(localStorage.getItem('ranking'));
+
+    expect(rank[0].score).toBe(350);
+    expect(rank[0].name).toBe('User4');
+
+    expect(rank[1].score).toBe(350);
+    expect(rank[1].name).toBe('Nome da pessoa');
+
+    expect(rank[2].score).toBe(346);
+    expect(rank[2].name).toBe('User1');
+
+
   });
 });
 
